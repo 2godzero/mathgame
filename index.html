@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>4학년 도형의 뒤집기와 돌리기 완전 정복</title>
+    <title>도형의 뒤집기와 돌리기 완전 정복!</title>
     <style>
         body { font-family: 'Malgun Gothic', sans-serif; background-color: #f5f7fa; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         
@@ -11,61 +11,79 @@
         .main-title { color: #2e7d32; font-size: 32px; font-weight: bold; margin-bottom: 30px; letter-spacing: -1px; }
         .section-title { font-size: 22px; color: #333; margin-bottom: 25px; font-weight: bold; }
         
+        /* 📱 QR 코드 버튼 스타일 (첫 화면 오른쪽 상단 고정) */
+        .qr-btn-wrapper { position: absolute; top: 20px; right: 25px; z-index: 100; }
+        .qr-show-btn { padding: 8px 15px; background-color: #fff; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; font-weight: bold; color: #666; cursor: pointer; transition: 0.2s; -webkit-tap-highlight-color: transparent; }
+        .qr-show-btn:hover { background-color: #f9f9f9; border-color: #999; }
+
+        /* 🖼️ QR 코드 모달(팝업) 스타일 */
+        #qr-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 5px 30px rgba(0,0,0,0.3); }
+        .modal-content h3 { margin-top: 0; color: #333; }
+        .modal-content img { width: 250px; height: 250px; margin: 15px 0; border: 1px solid #eee; }
+        .modal-content p { font-size: 14px; color: #2196F3; font-weight: bold; word-break: break-all; }
+        .modal-close-btn { margin-top: 15px; padding: 10px 25px; background: #555; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; -webkit-tap-highlight-color: transparent; }
+
         /* [화면 1] 문제 유형 및 설정 화면 UI */
         .setup-grid { display: flex; gap: 20px; justify-content: center; align-items: stretch; margin-bottom: 20px; }
         .setup-panel { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 25px; box-sizing: border-box; }
         .panel-label { font-size: 16px; font-weight: bold; color: #555; margin-bottom: 20px; }
         
-        /* 왼쪽: 문제 유형 선택 영역 */
         .type-panel { flex: 2; }
         .type-btn-group { display: flex; gap: 10px; justify-content: center; }
-        .opt-btn { padding: 15px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; background-color: #f0f0f0; color: #666; }
+        .opt-btn { padding: 15px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; background-color: #f0f0f0; color: #666; -webkit-tap-highlight-color: transparent; }
         .opt-btn.active { background-color: #ffb300; color: white; box-shadow: 0 4px 10px rgba(255,179,0,0.3); }
         
-        /* 오른쪽: 문제 개수 설정 영역 */
         .count-panel { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .counter-wrapper { display: flex; align-items: center; gap: 15px; margin-top: 5px; }
-        .count-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #ccc; background: #fff; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #555; }
-        .count-btn:hover { background: #f5f5f5; }
-        .count-display { font-size: 24px; font-weight: bold; color: #333; min-width: 30px; }
+        .count-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #ccc; background: #fff; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #555; -webkit-tap-highlight-color: transparent; }
+        .count-display { font-size: 24px; font-weight: bold; color: #333; min-width: 30px; user-select: none; }
         
-        /* 하단: 시작하기 원형 버튼 */
         .start-btn-container { display: flex; justify-content: flex-end; padding-right: 20px; margin-top: 10px; }
-        .start-circle-btn { width: 85px; height: 85px; background-color: #81c784; color: white; border: none; border-radius: 50%; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(129,199,132,0.4); }
+        .start-circle-btn { width: 85px; height: 85px; background-color: #81c784; color: white; border: none; border-radius: 50%; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(129,199,132,0.4); -webkit-tap-highlight-color: transparent; }
         .start-circle-btn:hover { background-color: #66bb6a; transform: scale(1.05); }
 
         /* [화면 2] 실습 그리기 화면 UI */
         .header-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .back-btn { padding: 8px 16px; background-color: #f0f0f0; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; color: #555; }
-        .back-btn:hover { background-color: #e0e0e0; }
+        .back-btn { padding: 8px 16px; background-color: #f0f0f0; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; color: #555; -webkit-tap-highlight-color: transparent; }
         .remain-count { font-size: 16px; font-weight: bold; color: #757575; }
         
         .game-info { font-size: 16px; color: #666; margin-bottom: 25px; }
         .canvas-flex { display: flex; gap: 30px; align-items: center; justify-content: center; margin-top: 10px; }
         .canvas-box { text-align: center; }
         .canvas-label { font-size: 15px; font-weight: bold; margin-bottom: 8px; color: #555; }
-        canvas { border: 2px solid #444; background-color: #fff; cursor: crosshair; border-radius: 4px; }
+        canvas { border: 2px solid #444; background-color: #fff; cursor: crosshair; border-radius: 4px; touch-action: none; }
         .arrow { font-size: 40px; color: #ff5722; user-select: none; }
 
-        /* 기능 제어 하단 버튼 */
         .step-container { display: flex; gap: 12px; justify-content: center; margin-top: 25px; }
-        .step-btn { padding: 12px 28px; font-size: 15px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: 0.15s; }
+        .step-btn { padding: 12px 28px; font-size: 15px; font-weight: bold; border: none; border-radius: 8px; cursor: pointer; transition: 0.15s; -webkit-tap-highlight-color: transparent; }
         .btn-inactive { background-color: #e0e0e0; color: #616161; }
         .btn-active-vertex { background-color: #ffb300; color: white; } 
         .btn-active-line { background-color: #4caf50; color: white; }   
         .btn-clear { background-color: #e57373; color: white; }        
-        .btn-clear:hover { background-color: #ef5350; }
 
-        .check-btn { margin-top: 25px; padding: 14px 60px; font-size: 18px; font-weight: bold; background-color: #2e7d32; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(46,125,50,0.2); }
+        .check-btn { margin-top: 25px; padding: 14px 60px; font-size: 18px; font-weight: bold; background-color: #2e7d32; color: white; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(46,125,50,0.2); -webkit-tap-highlight-color: transparent; }
         .check-btn:hover { background-color: #1b5e20; }
         
-        .copyright { font-size: 12px; color: #b0bec5; margin-top: 30px; }
+        .copyright { font-size: 12px; color: #b0bec5; margin-top: 30px; user-select: none; }
     </style>
 </head>
 <body>
 
+    <div id="qr-modal" onclick="toggleQR(false)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3>QR 코드로 접속하기</h3>
+            <img id="qr-image" src="" alt="QR Code">
+            <p>https://2godzero.github.io/mathgame/</p>
+            <button class="modal-close-btn" onclick="toggleQR(false)">닫기</button>
+        </div>
+    </div>
+
     <div id="screen-main" class="card">
-        <div class="main-title">선대칭/점대칭도형 완전 정복</div>
+        <div class="qr-btn-wrapper">
+            <button class="qr-show-btn" onclick="toggleQR(true)">QR 코드</button>
+        </div>
+        <div class="main-title">도형의 뒤집기와 돌리기 완전 정복!</div>
         <div class="section-title">문제 유형 및 설정</div>
         
         <div class="setup-grid">
@@ -102,7 +120,7 @@
         </div>
         
         <div id="practice-title" class="main-title" style="font-size: 26px; margin-bottom: 5px; color:#333;">1번째 문제</div>
-        <div id="practice-info" class="game-info">아래 도형을 알맞게 격자 위에 변형하여 완성해 주세요.</div>
+        <div id="practice-info" class="game-info">도형을 알맞게 격자 위에 변형하여 완성해 보세요.</div>
         
         <div class="canvas-flex">
             <div class="canvas-box">
@@ -144,10 +162,9 @@
         let activeIndex = 0;       
         let currentStep = 'vertex';
         
-        // 🌟 오류 해결 핵심 데이터 구조 분리 (점과 선을 독립적으로 관리)
-        let userPoints = [];       // [{x, y}, ...]
-        let userLines = [];        // [{p1: {x,y}, p2: {x,y}}, ...]
-        let selectedPoint = null;  // 선분 연결 시 시작점이 될 선택된 점 저장
+        let userPoints = [];       
+        let userLines = [];        
+        let selectedPoint = null;  
 
         const rawPool = {
             flip: [
@@ -165,6 +182,19 @@
                 { title: "문제 (반시계방향으로 180° 돌리기)", type: "turn_180", points: [{x: 1, y: 1}, {x: 4, y: 1}, {x: 4, y: 4}, {x: 1, y: 4}] }
             ]
         };
+
+        function toggleQR(show) {
+            const modal = document.getElementById('qr-modal');
+            const qrImg = document.getElementById('qr-image');
+            const targetUrl = "https://2godzero.github.io/mathgame/";
+
+            if (show) {
+                qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(targetUrl)}`;
+                modal.style.display = 'flex';
+            } else {
+                modal.style.display = 'none';
+            }
+        }
 
         function selectType(type) {
             configType = type;
@@ -193,25 +223,20 @@
 
             document.getElementById('screen-main').style.display = 'none';
             document.getElementById('screen-practice').style.display = 'block';
-            
             loadSessionQuestion();
         }
 
         function loadSessionQuestion() {
-            userPoints = [];
-            userLines = [];
-            selectedPoint = null;
+            userPoints = []; userLines = []; selectedPoint = null;
             setStep('vertex');
-            
+            if(sessionQuestions.length === 0) return;
             const q = sessionQuestions[activeIndex];
             document.getElementById('practice-title').innerText = `${activeIndex + 1}번째 문제`;
-            document.getElementById('practice-info').innerText = q.title + "를 한 후의 올바른 모양을 그려보세요.";
+            document.getElementById('practice-info').innerText = q.title + "를 한 후의 모양을 그려보세요.";
             document.getElementById('remain-txt').innerText = `남은 문제 ${sessionQuestions.length - activeIndex}개`;
-
             qCtx.clearRect(0, 0, width, height);
             drawGrid(qCtx);
             drawShape(qCtx, q.points, '#4b4b4b');
-            
             renderAnswerCanvas();
         }
 
@@ -222,8 +247,7 @@
 
         function setStep(step) {
             currentStep = step;
-            if (step === 'vertex') selectedPoint = null; // 꼭짓점 모드로 돌아가면 선분 선택 초기화
-            
+            if (step === 'vertex') selectedPoint = null;
             const btnVertex = document.getElementById('btn-step-vertex');
             const btnLine = document.getElementById('btn-step-line');
             if(step === 'vertex') {
@@ -237,8 +261,7 @@
         }
 
         function drawGrid(ctx) {
-            ctx.strokeStyle = '#e0e0e0';
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#e0e0e0'; ctx.lineWidth = 1;
             for (let i = 0; i <= gridCount; i++) {
                 let pos = i * gridSize;
                 ctx.beginPath(); ctx.moveTo(pos, 0); ctx.lineTo(pos, height); ctx.stroke();
@@ -246,126 +269,85 @@
             }
         }
 
-        // 🌟 수정된 드로잉 렌더러 함수
         function drawShape(ctx, points, color) {
             if (ctx === qCtx) {
-                // 문제 창 다각형 그리기 (기존 방식 유지)
                 if (points.length === 0) return;
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 3;
-                ctx.fillStyle = color + '15';
+                ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.fillStyle = color + '15';
                 ctx.beginPath();
                 ctx.moveTo(points[0].x * gridSize, points[0].y * gridSize);
-                for (let i = 1; i < points.length; i++) {
-                    ctx.lineTo(points[i].x * gridSize, points[i].y * gridSize);
-                }
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-
+                for (let i = 1; i < points.length; i++) ctx.lineTo(points[i].x * gridSize, points[i].y * gridSize);
+                ctx.closePath(); ctx.fill(); ctx.stroke();
                 points.forEach(p => {
                     ctx.beginPath(); ctx.arc(p.x * gridSize, p.y * gridSize, 5, 0, Math.PI * 2);
                     ctx.fillStyle = color; ctx.fill();
                 });
             } else {
-                // 정답 창 그리기 (선분 독립적 연결 방식)
-                // 1. 등록된 모든 선분 그리기
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 3;
+                ctx.strokeStyle = color; ctx.lineWidth = 3;
                 userLines.forEach(line => {
-                    ctx.beginPath();
-                    ctx.moveTo(line.p1.x * gridSize, line.p1.y * gridSize);
-                    ctx.lineTo(line.p2.x * gridSize, line.p2.y * gridSize);
-                    ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(line.p1.x * gridSize, line.p1.y * gridSize);
+                    ctx.lineTo(line.p2.x * gridSize, line.p2.y * gridSize); ctx.stroke();
                 });
-
-                // 2. 모든 꼭짓점 그리기
                 userPoints.forEach(p => {
                     ctx.beginPath(); ctx.arc(p.x * gridSize, p.y * gridSize, 5, 0, Math.PI * 2);
                     ctx.fillStyle = color; ctx.fill();
                 });
-
-                // 3. 선분 모드에서 현재 선택된 시작점 강조 표시 (주황색 원 알림)
                 if (currentStep === 'line' && selectedPoint !== null) {
-                    ctx.beginPath();
-                    ctx.arc(selectedPoint.x * gridSize, selectedPoint.y * gridSize, 9, 0, Math.PI * 2);
-                    ctx.strokeStyle = '#ff5722';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
+                    ctx.beginPath(); ctx.arc(selectedPoint.x * gridSize, selectedPoint.y * gridSize, 9, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#ff5722'; ctx.lineWidth = 2; ctx.stroke();
                 }
             }
         }
 
         function renderAnswerCanvas() {
             aCtx.clearRect(0, 0, width, height);
-            drawGrid(aCtx);
-            drawShape(aCtx, userPoints, '#2196F3'); 
+            drawGrid(aCtx); drawShape(aCtx, userPoints, '#2196F3');
         }
 
-        function clearAllAnswer() {
-            userPoints = [];
-            userLines = [];
-            selectedPoint = null;
-            setStep('vertex');
-        }
+        function clearAllAnswer() { userPoints = []; userLines = []; selectedPoint = null; setStep('vertex'); }
 
-        // 🌟 수정된 사용자 클릭 인터랙션 리스너
-        aCanvas.addEventListener('click', function(event) {
+        function handleCanvasClick(clientX, clientY) {
             const rect = aCanvas.getBoundingClientRect();
-            const gridX = Math.round((event.clientX - rect.left) / gridSize);
-            const gridY = Math.round((event.clientY - rect.top) / gridSize);
-
+            const gridX = Math.round((clientX - rect.left) / gridSize);
+            const gridY = Math.round((clientY - rect.top) / gridSize);
             if (gridX < 0 || gridX > gridCount || gridY < 0 || gridY > gridCount) return;
 
             if (currentStep === 'vertex') {
-                // 1단계 꼭짓점 모드: 클릭 시 점 생성 / 다시 누르면 점과 연결된 선 삭제
                 const idx = userPoints.findIndex(p => p.x === gridX && p.y === gridY);
-                if (idx === -1) {
-                    userPoints.push({ x: gridX, y: gridY });
-                } else {
+                if (idx === -1) userPoints.push({ x: gridX, y: gridY });
+                else {
                     userPoints.splice(idx, 1);
-                    // 삭제된 점과 연관된 선분들도 자동 제거해 주는 안전 장치
-                    userLines = userLines.filter(line => 
-                        !(line.p1.x === gridX && line.p1.y === gridY) && 
-                        !(line.p2.x === gridX && line.p2.y === gridY)
-                    );
+                    userLines = userLines.filter(l => !(l.p1.x === gridX && l.p1.y === gridY) && !(l.p2.x === gridX && l.p2.y === gridY));
                 }
             } else if (currentStep === 'line') {
-                // 2단계 선분 모드: 점과 점을 차례대로 이어서 정밀 선분 연결
                 if (selectedPoint === null) {
                     selectedPoint = { x: gridX, y: gridY };
-                    // 클릭한 위치에 점이 없다면 자동으로 점 생성
-                    if (!userPoints.some(p => p.x === gridX && p.y === gridY)) {
-                        userPoints.push({ x: gridX, y: gridY });
-                    }
+                    if (!userPoints.some(p => p.x === gridX && p.y === gridY)) userPoints.push({ x: gridX, y: gridY });
                 } else {
-                    if (selectedPoint.x === gridX && selectedPoint.y === gridY) {
-                        // 같은 점을 연속 클릭 시 선택 취소
-                        selectedPoint = null;
-                    } else {
-                        // 새 선분 등록
-                        userLines.push({
-                            p1: { x: selectedPoint.x, y: selectedPoint.y },
-                            p2: { x: gridX, y: gridY }
-                        });
-                        if (!userPoints.some(p => p.x === gridX && p.y === gridY)) {
-                            userPoints.push({ x: gridX, y: gridY });
-                        }
-                        // 다음 선을 연속해서 쉽게 그릴 수 있도록 타겟 점을 새 시작점으로 이동 (연속 드로잉)
+                    if (selectedPoint.x === gridX && selectedPoint.y === gridY) selectedPoint = null;
+                    else {
+                        userLines.push({ p1: { x: selectedPoint.x, y: selectedPoint.y }, p2: { x: gridX, y: gridY } });
+                        if (!userPoints.some(p => p.x === gridX && p.y === gridY)) userPoints.push({ x: gridX, y: gridY });
                         selectedPoint = { x: gridX, y: gridY };
                     }
                 }
             }
             renderAnswerCanvas();
+        }
+
+        aCanvas.addEventListener('mousedown', function(e) {
+            handleCanvasClick(e.clientX, e.clientY);
         });
 
-        // 🌟 선분 기반 고도화된 공간수학 채점 알고리즘 (그리는 순서 상관없이 형태만 비교)
-        function standardizeSegment(p1, p2) {
-            if (p1.x < p2.x || (p1.x === p2.x && p1.y < p2.y)) {
-                return { p1: {x: p1.x, y: p1.y}, p2: {x: p2.x, y: p2.y} };
-            } else {
-                return { p1: {x: p2.x, y: p2.y}, p2: {x: p1.x, y: p1.y} };
+        aCanvas.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            if(e.touches.length > 0) {
+                handleCanvasClick(e.touches[0].clientX, e.touches[0].clientY);
             }
+        });
+
+        function standardizeSegment(p1, p2) {
+            if (p1.x < p2.x || (p1.x === p2.x && p1.y < p2.y)) return { p1, p2 };
+            else return { p1: p2, p2: p1 };
         }
 
         function getTransformedPoints(points, type) {
@@ -382,86 +364,37 @@
         function checkAnswer() {
             const q = sessionQuestions[activeIndex];
             const correctTransformed = getTransformedPoints(q.points, q.type);
-            
-            // 1. 수학적 실제 정답 선분 세트 구축
             let correctSegments = [];
             for (let i = 0; i < correctTransformed.length; i++) {
-                let p1 = correctTransformed[i];
-                let p2 = correctTransformed[(i + 1) % correctTransformed.length];
-                correctSegments.push(standardizeSegment(p1, p2));
+                correctSegments.push(standardizeSegment(correctTransformed[i], correctTransformed[(i + 1) % correctTransformed.length]));
             }
-
-            // 2. 사용자가 그린 선분 세트 추출 및 중복선 제거
             let userSegments = [];
-            userLines.forEach(line => {
-                userSegments.push(standardizeSegment(line.p1, line.p2));
-            });
-
+            userLines.forEach(l => userSegments.push(standardizeSegment(l.p1, l.p2)));
             let uniqueUserSegments = [];
             userSegments.forEach(s => {
-                const duplicate = uniqueUserSegments.some(u => 
-                    u.p1.x === s.p1.x && u.p1.y === s.p1.y &&
-                    u.p2.x === s.p2.x && u.p2.y === s.p2.y
-                );
-                if (!duplicate) uniqueUserSegments.push(s);
+                if (!uniqueUserSegments.some(u => u.p1.x === s.p1.x && u.p1.y === s.p1.y && u.p2.x === s.p2.x && u.p2.y === s.p2.y)) uniqueUserSegments.push(s);
             });
 
-            // 선분의 총 개수가 다르면 오답 처리
-            if (uniqueUserSegments.length !== correctSegments.length) {
-                alert("다시 풀어보세요. ❌");
-                return;
-            }
+            if (uniqueUserSegments.length !== correctSegments.length) { alert("다시 풀어보세요. ❌"); return; }
 
-            // 3. 정답 선분 최소 기준 좌표 정규화 (위치 불변성 평행이동)
-            let allCorrectPoints = [];
-            correctSegments.forEach(s => { allCorrectPoints.push(s.p1); allCorrectPoints.push(s.p2); });
-            const minCorrectX = Math.min(...allCorrectPoints.map(p => p.x));
-            const minCorrectY = Math.min(...allCorrectPoints.map(p => p.y));
-            
-            let normCorrectSegments = correctSegments.map(s => ({
-                p1: { x: s.p1.x - minCorrectX, y: s.p1.y - minCorrectY },
-                p2: { x: s.p2.x - minCorrectX, y: s.p2.y - minCorrectY }
-            }));
+            let allCP = []; correctSegments.forEach(s => { allCP.push(s.p1); allCP.push(s.p2); });
+            const minCX = Math.min(...allCP.map(p => p.x)), minCY = Math.min(...allCP.map(p => p.y));
+            let normCS = correctSegments.map(s => ({ p1: { x: s.p1.x - minCX, y: s.p1.y - minCY }, p2: { x: s.p2.x - minCX, y: s.p2.y - minCY } }));
 
-            // 4. 사용자 선분 최소 기준 좌표 정규화
-            let allUserPoints = [];
-            uniqueUserSegments.forEach(s => { allUserPoints.push(s.p1); allUserPoints.push(s.p2); });
-            
-            let isCorrect = false;
-            if (allUserPoints.length > 0) {
-                const minUserX = Math.min(...allUserPoints.map(p => p.x));
-                const minUserY = Math.min(...allUserPoints.map(p => p.y));
-                
-                let normUserSegments = uniqueUserSegments.map(s => ({
-                    p1: { x: s.p1.x - minUserX, y: s.p1.y - minUserY },
-                    p2: { x: s.p2.x - minUserX, y: s.p2.y - minUserY }
-                }));
+            let allUP = []; uniqueUserSegments.forEach(s => { allUP.push(s.p1); allUP.push(s.p2); });
+            if (allUP.length === 0) { alert("다시 풀어보세요. ❌"); return; }
+            const minUX = Math.min(...allUP.map(p => p.x)), minUY = Math.min(...allUP.map(p => p.y));
+            let normUS = uniqueUserSegments.map(s => ({ p1: { x: s.p1.x - minUX, y: s.p1.y - minUY }, p2: { x: s.p2.x - minUX, y: s.p2.y - minUY } }));
 
-                // 모든 정답 선분이 사용자가 그린 선분 세트 내에 온전히 존재하는지 대조 검증
-                let matchCount = 0;
-                normCorrectSegments.forEach(nc => {
-                    const found = normUserSegments.some(nu => 
-                        nu.p1.x === nc.p1.x && nu.p1.y === nc.p1.y &&
-                        nu.p2.x === nc.p2.x && nu.p2.y === nc.p2.y
-                    );
-                    if (found) matchCount++;
-                });
+            let matchCount = 0;
+            normCS.forEach(nc => { if (normUS.some(nu => nu.p1.x === nc.p1.x && nu.p1.y === nc.p1.y && nu.p2.x === nc.p2.x && nu.p2.y === nc.p2.y)) matchCount++; });
 
-                if (matchCount === normCorrectSegments.length) isCorrect = true;
-            }
-
-            if (isCorrect) {
+            if (matchCount === normCS.length) {
                 alert("정답! 🎉");
                 activeIndex++;
-                if (activeIndex < sessionQuestions.length) {
-                    loadSessionQuestion();
-                } else {
-                    alert("축하합니다! 설정된 모든 문제를 완벽하게 풀어냈습니다! 🏆");
-                    goBackToMenu();
-                }
-            } else {
-                alert("다시 풀어보세요. ❌");
-            }
+                if (activeIndex < sessionQuestions.length) loadSessionQuestion();
+                else { alert("축하합니다! 모든 문제를 완료했습니다! 🏆"); goBackToMenu(); }
+            } else { alert("다시 풀어보세요. ❌"); }
         }
     </script>
 </body>
